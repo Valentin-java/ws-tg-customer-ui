@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: ws-tg-ui
+
+server:
+  port: 18767
+
+ORDER_GATEWAY_URL: ${GATEWAY_URL:http://localhost:18763}
+
+auth:
+  rest:
+    authUrl: ${ORDER_GATEWAY_URL}/v1/workers/auth/login
+    username: ${AUTH_USERNAME}
+    password: ${AUTH_PASSWORD}
+
+feign:
+  ws-auth:
+    url: ${ORDER_GATEWAY_URL}
+  ws-order:
+    url: ${ORDER_GATEWAY_URL}/v1/order/customer
+
+jwt:
+  public:
+    key: ${JWT_PUBLIC_SECRET_KEY}
+  access-token:
+    expiration: 3600000
+  refresh-token:
+    expiration: 36000000
+
+bot:
+  name: SpringParserBot
+  token: 7900784201:AAHuFoIWIdFpg4I2GHGC7fSPgsr2wo8cFek
