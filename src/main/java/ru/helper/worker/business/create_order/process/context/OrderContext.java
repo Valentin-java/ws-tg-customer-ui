@@ -1,12 +1,13 @@
-package ru.helper.worker.controller.context;
+package ru.helper.worker.business.create_order.process.context;
 
 import lombok.Data;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.helper.worker.controller.process.UserContext;
 import ru.helper.worker.controller.model.OrderRequest;
-import ru.helper.worker.controller.state.OrderState;
+import ru.helper.worker.business.create_order.process.states.OrderState;
 
 @Data
-public class OrderContext {
+public class OrderContext implements UserContext {
     private Long chatId;
     private OrderState currentState;
     private OrderRequest orderRequest;
@@ -17,7 +18,13 @@ public class OrderContext {
         this.orderRequest = new OrderRequest();
     }
 
-    public void continueProcessInput(String input) throws TelegramApiException {
+    @Override
+    public boolean isActive() {
+        return currentState != null;
+    }
+
+    @Override
+    public void continueProcess(String input) throws TelegramApiException {
         currentState.handleInput(this, input);
         currentState.updateState(this);
     }
