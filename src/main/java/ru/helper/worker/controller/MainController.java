@@ -3,23 +3,21 @@ package ru.helper.worker.controller;
 import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.helper.worker.business.interfaces.OrderService;
 import ru.helper.worker.config.bot.BotConfig;
-import ru.helper.worker.controller.context.OrderContext;
+import ru.helper.worker.controller.events.command_event.CommandReceivedEvent;
+import ru.helper.worker.controller.manager.UserContextManager;
 import ru.helper.worker.controller.model.UserInput;
+import ru.helper.worker.controller.process.UserContext;
 
 import java.util.List;
 
-import static ru.helper.worker.controller.model.CommonConstants.DEFAULT_MESSAGE_ERROR;
-import static ru.helper.worker.controller.model.CommonConstants.WELCOME_MESSAGE;
 import static ru.helper.worker.controller.util.MainControllerUtils.extractUserInput;
 import static ru.helper.worker.controller.util.MainControllerUtils.getUsername;
 
@@ -28,7 +26,8 @@ import static ru.helper.worker.controller.util.MainControllerUtils.getUsername;
 public class MainController extends TelegramLongPollingBot {
 
     private final BotConfig config;
-    private final OrderService orderService;
+    private final UserContextManager contextManager;
+    private final ApplicationEventPublisher eventPublisher;
 
     @PostConstruct
     @SneakyThrows
@@ -37,10 +36,13 @@ public class MainController extends TelegramLongPollingBot {
         this.execute(new SetMyCommands(commandList, new BotCommandScopeDefault(), null));
     }
 
-    public MainController(BotConfig config, OrderService orderService) {
+    public MainController(BotConfig config,
+                          UserContextManager contextManager,
+                          ApplicationEventPublisher eventPublisher) {
         super(config.getBotToken());
         this.config = config;
-        this.orderService = orderService;
+        this.contextManager = contextManager;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -61,10 +63,11 @@ public class MainController extends TelegramLongPollingBot {
             Long chatId = userInput.getChatId();
             String input = userInput.getInput();
 
-            OrderContext context = orderService.getContext(chatId);
-            if (context != null && context.getCurrentState() != null) {
-                context.continueProcessInput(input);
 
+            UserContext activeContext = contextManager.getActiveContext(chatId);
+            if (activeContext != null && activeContext.isActive()) {
+                // Передаем управление менеджеру процессов
+                activeContext.continueProcess(input);
             } else {
                 String username = getUsername(update);
                 handleCommand(chatId, input, username);
@@ -72,18 +75,7 @@ public class MainController extends TelegramLongPollingBot {
         }
     }
 
-    private void handleCommand(Long chatId, String input, String username) throws TelegramApiException {
-        switch (input) {
-            case "/start" -> sendMessage(chatId, WELCOME_MESSAGE);
-            case "/create_order" -> orderService.initProcess(chatId, username);
-            default -> sendMessage(chatId, DEFAULT_MESSAGE_ERROR);
-        }
-    }
-
-    public void sendMessage(Long chatId, String text) throws TelegramApiException {
-        execute(SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .build());
+    private void handleCommand(Long chatId, String input, String username) {
+        eventPublisher.publishEvent(new CommandReceivedEvent(this, chatId, input, username));
     }
 }
