@@ -69,13 +69,8 @@ public class MainController extends TelegramLongPollingBot {
                 // Передаем управление менеджеру процессов
                 activeContext.continueProcess(input);
             } else {
-                String username = getUsername(update);
-                handleCommand(chatId, input, username);
+                eventPublisher.publishEvent(new CommandReceivedEvent(this, chatId, input, getUsername(update)));
             }
         }
-    }
-
-    private void handleCommand(Long chatId, String input, String username) {
-        eventPublisher.publishEvent(new CommandReceivedEvent(this, chatId, input, username));
     }
 }
