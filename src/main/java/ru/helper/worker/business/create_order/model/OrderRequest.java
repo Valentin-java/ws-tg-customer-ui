@@ -1,7 +1,7 @@
-package ru.helper.worker.controller.model;
+package ru.helper.worker.business.create_order.model;
 
 import lombok.Data;
-import ru.helper.worker.controller.model.enums.OrderCategory;
+import ru.helper.worker.business.create_order.model.enums.OrderCategory;
 
 import java.math.BigDecimal;
 

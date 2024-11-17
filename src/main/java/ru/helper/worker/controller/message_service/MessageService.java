@@ -1,4 +1,4 @@
-package ru.helper.worker.controller.message;
+package ru.helper.worker.controller.message_service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

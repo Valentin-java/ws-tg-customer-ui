@@ -1,4 +1,4 @@
-package ru.helper.worker.controller.message;
+package ru.helper.worker.controller.message_service;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultAbsSender;

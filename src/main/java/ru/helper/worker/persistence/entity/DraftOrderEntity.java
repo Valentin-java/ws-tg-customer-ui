@@ -15,7 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import ru.helper.worker.controller.model.enums.OrderCategory;
+import ru.helper.worker.business.create_order.model.enums.OrderCategory;
 import ru.helper.worker.persistence.enums.OrderStatus;
 import ru.helper.worker.persistence.enums.SendProcess;
 

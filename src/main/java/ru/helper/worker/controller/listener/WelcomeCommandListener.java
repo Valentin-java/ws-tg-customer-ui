@@ -6,9 +6,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.helper.worker.controller.events.CommandReceivedEvent;
-import ru.helper.worker.controller.message.MessageService;
+import ru.helper.worker.controller.message_service.MessageService;
 
-import static ru.helper.worker.controller.model.CommonConstants.WELCOME_MESSAGE;
+import static ru.helper.worker.business.create_order.model.CommonConstants.WELCOME_MESSAGE;
 
 @Service
 @RequiredArgsConstructor

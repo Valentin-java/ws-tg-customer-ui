@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.helper.worker.controller.events.MessageSendEvent;
-import ru.helper.worker.controller.message.MessageService;
+import ru.helper.worker.controller.message_service.MessageService;
 
 @Service
 @RequiredArgsConstructor

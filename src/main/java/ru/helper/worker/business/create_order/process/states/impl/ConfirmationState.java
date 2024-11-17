@@ -10,13 +10,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import ru.helper.worker.business.create_order.process.context.OrderContext;
 import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.controller.events.OrderProcessCompletedEvent;
-import ru.helper.worker.controller.model.OrderRequest;
+import ru.helper.worker.business.create_order.model.OrderRequest;
 import ru.helper.worker.business.create_order.process.states.OrderState;
-import ru.helper.worker.persistence.DraftOrderMapper;
+import ru.helper.worker.persistence.mapper.DraftOrderMapper;
 import ru.helper.worker.persistence.enums.OrderStatus;
 import ru.helper.worker.persistence.enums.SendProcess;
 import ru.helper.worker.persistence.repository.DraftOrderRepository;
-import ru.helper.worker.rest.common.OrderClientService;
+import ru.helper.worker.rest.common.ExternalClientService;
 import ru.helper.worker.rest.create_order.mapper.OrderMapper;
 import ru.helper.worker.rest.create_order.model.OrderCreateRequestDto;
 import ru.helper.worker.rest.create_order.model.OrderCreateResponseDto;
@@ -35,7 +35,7 @@ public class ConfirmationState implements OrderState {
     private static final String NOT_SELECTED_BY_USER_MSG = "Пожалуйста, выберите 'Да' или 'Нет' с помощью кнопок ниже.";
     private static final String SENT_BY_SUCCESS_MSG = "Ваш заказ опубликован! \n id заказа: %s";
 
-    private final OrderClientService<OrderCreateRequestDto, ResponseEntity<OrderCreateResponseDto>> orderClient;
+    private final ExternalClientService<OrderCreateRequestDto, ResponseEntity<OrderCreateResponseDto>> orderClient;
     private final ApplicationEventPublisher eventPublisher;
     private final DraftOrderRepository orderRepository;
     private final DraftOrderMapper draftOrderMapper;

@@ -12,8 +12,8 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import ru.helper.worker.config.bot.BotConfig;
 import ru.helper.worker.controller.events.CommandReceivedEvent;
-import ru.helper.worker.controller.manager.UserContextManager;
-import ru.helper.worker.controller.model.UserInput;
+import ru.helper.worker.business.common.manager.UserContextManager;
+import ru.helper.worker.business.create_order.model.UserInput;
 
 import java.util.List;
 

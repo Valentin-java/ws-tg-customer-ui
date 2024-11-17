@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
 import ru.helper.worker.controller.events.MessageSendEvent;
-import ru.helper.worker.controller.model.enums.OrderCategory;
+import ru.helper.worker.business.create_order.model.enums.OrderCategory;
 import ru.helper.worker.business.create_order.process.states.OrderState;
 
 import java.util.ArrayList;

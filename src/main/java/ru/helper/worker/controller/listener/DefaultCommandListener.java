@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.helper.worker.config.bot.BotProperties;
 import ru.helper.worker.controller.events.CommandReceivedEvent;
-import ru.helper.worker.controller.message.MessageService;
+import ru.helper.worker.controller.message_service.MessageService;
 
-import static ru.helper.worker.controller.model.CommonConstants.DEFAULT_MESSAGE_ERROR;
+import static ru.helper.worker.business.create_order.model.CommonConstants.DEFAULT_MESSAGE_ERROR;
 
 @Service
 @RequiredArgsConstructor
