@@ -3,12 +3,12 @@ package ru.helper.worker.business.create_order.process.states.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
-import ru.helper.worker.controller.message.MessageService;
+import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.controller.model.enums.OrderCategory;
 import ru.helper.worker.business.create_order.process.states.OrderState;
 
@@ -20,24 +20,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategorySelectionState implements OrderState {
 
+    private static final String NOT_SELECTED_MSG = "Пожалуйста, выберите категорию из предложенных вариантов.";
+
     private final ShortDescriptionState nextState;
-    private final MessageService messageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public void handleInput(OrderContext context, String input) throws TelegramApiException {
+    public void handleInput(OrderContext context, String input) {
         log.debug("Handling input in CategorySelectionState for chatId {}: {}", context.getChatId(), input);
         try {
             OrderCategory category = OrderCategory.valueOf(input);
             context.getOrderRequest().setCategory(category);
             context.setInputValid(true);
         } catch (IllegalArgumentException e) {
-            messageService.sendMessage(context.getChatId(), "Пожалуйста, выберите категорию из предложенных вариантов.");
+            eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), NOT_SELECTED_MSG));
             context.setInputValid(false);
         }
     }
 
     @Override
-    public void enter(OrderContext context) throws TelegramApiException {
+    public void enter(OrderContext context) {
         sendCategorySelection(context);
     }
 
@@ -52,7 +54,7 @@ public class CategorySelectionState implements OrderState {
         }
     }
 
-    private void sendCategorySelection(OrderContext context) throws TelegramApiException {
+    private void sendCategorySelection(OrderContext context) {
         // Создаем инлайн-кнопки для категорий
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         for (OrderCategory category : OrderCategory.values()) {
@@ -66,6 +68,6 @@ public class CategorySelectionState implements OrderState {
 
         InlineKeyboardMarkup keys = InlineKeyboardMarkup.builder().keyboard(buttons).build();
 
-        messageService.sendMessage(context.getChatId(), "Выберите категорию заказа:", keys);
+        eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), NOT_SELECTED_MSG, keys));
     }
 }

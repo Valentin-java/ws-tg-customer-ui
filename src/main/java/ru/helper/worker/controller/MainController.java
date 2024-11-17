@@ -11,10 +11,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import ru.helper.worker.config.bot.BotConfig;
-import ru.helper.worker.controller.events.command_event.CommandReceivedEvent;
+import ru.helper.worker.controller.events.CommandReceivedEvent;
 import ru.helper.worker.controller.manager.UserContextManager;
 import ru.helper.worker.controller.model.UserInput;
-import ru.helper.worker.controller.process.UserContext;
+import ru.helper.worker.controller.process.GenericContext;
 
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class MainController extends TelegramLongPollingBot {
             String input = userInput.getInput();
 
 
-            UserContext activeContext = contextManager.getActiveContext(chatId);
+            GenericContext activeContext = contextManager.getActiveContext(chatId);
             if (activeContext != null && activeContext.isActive()) {
                 // Передаем управление менеджеру процессов
                 activeContext.continueProcess(input);

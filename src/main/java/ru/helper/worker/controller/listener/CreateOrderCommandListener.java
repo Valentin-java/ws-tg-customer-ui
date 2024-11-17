@@ -4,17 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import ru.helper.worker.business.create_order.interfaces.OrderService;
-import ru.helper.worker.controller.events.command_event.CommandReceivedEvent;
+import ru.helper.worker.controller.events.CommandReceivedEvent;
 
 @Service
 @RequiredArgsConstructor
 public class CreateOrderCommandListener {
 
+    private static final String CREATE_ORDER_COMMAND = "/create_order";
     private final OrderService service;
 
     @EventListener
     public void handleCreateOrderCommand(CommandReceivedEvent event) {
-        if ("/create_order".equals(event.getCommand())) {
+        if (CREATE_ORDER_COMMAND.equals(event.getCommand())) {
             service.initProcess(event.getChatId(), event.getUsername());
         }
     }

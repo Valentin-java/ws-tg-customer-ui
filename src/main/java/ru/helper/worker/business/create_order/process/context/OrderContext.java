@@ -2,12 +2,12 @@ package ru.helper.worker.business.create_order.process.context;
 
 import lombok.Data;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.helper.worker.controller.process.UserContext;
+import ru.helper.worker.controller.process.GenericContext;
 import ru.helper.worker.controller.model.OrderRequest;
 import ru.helper.worker.business.create_order.process.states.OrderState;
 
 @Data
-public class OrderContext implements UserContext {
+public class OrderContext implements GenericContext {
     private Long chatId;
     private OrderState currentState;
     private OrderRequest orderRequest;
