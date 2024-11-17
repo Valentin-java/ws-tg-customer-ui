@@ -3,15 +3,19 @@ package ru.helper.worker.business.create_order.process.states.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
 import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.controller.events.OrderProcessCompletedEvent;
 import ru.helper.worker.controller.model.OrderRequest;
 import ru.helper.worker.business.create_order.process.states.OrderState;
+import ru.helper.worker.persistence.DraftOrderMapper;
+import ru.helper.worker.persistence.enums.OrderStatus;
+import ru.helper.worker.persistence.enums.SendProcess;
+import ru.helper.worker.persistence.repository.DraftOrderRepository;
 import ru.helper.worker.rest.common.OrderClientService;
 import ru.helper.worker.rest.create_order.mapper.OrderMapper;
 import ru.helper.worker.rest.create_order.model.OrderCreateRequestDto;
@@ -25,24 +29,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConfirmationState implements OrderState {
 
-    private static final String SEND_ERROR_MSG = "Произошла ошибка при публикации заказа. Пожалуйста, попробуйте позже.";
-    private static final String NOT_SENT_BY_USER_MSG = "Ваш заказ не был опубликован.";
+    private static final String SEND_ERROR_MSG = "Произошла ошибка при публикации заказа, возможно какие-то проблемы с сервисом. " +
+            "\n Мы сохранили Ваш заказ, чтобы отправить его позже. \n Мы отправим Вам уведомление при успешной публикации заказа.";
+    private static final String NOT_SENT_BY_USER_MSG = "Ваш заказ не был опубликован. \n Ваш заказ был удален.";
     private static final String NOT_SELECTED_BY_USER_MSG = "Пожалуйста, выберите 'Да' или 'Нет' с помощью кнопок ниже.";
+    private static final String SENT_BY_SUCCESS_MSG = "Ваш заказ опубликован! \n id заказа: %s";
 
-    private final OrderClientService<OrderCreateRequestDto, OrderCreateResponseDto> orderClient;
+    private final OrderClientService<OrderCreateRequestDto, ResponseEntity<OrderCreateResponseDto>> orderClient;
     private final ApplicationEventPublisher eventPublisher;
+    private final DraftOrderRepository orderRepository;
+    private final DraftOrderMapper draftOrderMapper;
     private final OrderMapper mapper;
 
     @Override
-    public void handleInput(OrderContext context, String input) throws TelegramApiException {
+    public void handleInput(OrderContext context, String input) {
         log.debug("Handling input in ConfirmationState for chatId {}: {}", context.getChatId(), input);
         if ("CONFIRM_YES".equals(input)) {
-            OrderCreateResponseDto result = orderClient.doRequest(mapper.toRequest(context.getOrderRequest()));
-            if (result != null) {
-                eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), "Ваш заказ опубликован! \n id заказа: " + result.orderId()));
+
+            var order = mapper.toRequest(context.getOrderRequest());
+            var response = orderClient.doRequest(order);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), String.format(SENT_BY_SUCCESS_MSG, response.getBody().orderId())));
             } else {
+                var draftOrder = draftOrderMapper.toEntity(context);
+                draftOrder.setStatus(OrderStatus.DRAFT);
+                draftOrder.setSendProcess(SendProcess.AUTO);
+                orderRepository.save(draftOrder);
                 eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), SEND_ERROR_MSG));
-                // здесь надо прихранить черновик
             }
             updateState(context);
         } else if ("CONFIRM_NO".equals(input)) {

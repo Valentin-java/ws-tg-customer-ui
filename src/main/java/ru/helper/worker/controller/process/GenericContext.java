@@ -1,8 +1,10 @@
 package ru.helper.worker.controller.process;
 
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import java.time.LocalDateTime;
 
 public interface GenericContext {
     boolean isActive();
-    void continueProcess(String input) throws TelegramApiException;
+    void continueProcess(String input);
+    LocalDateTime getContextCreated();
+    Long getChatId();
 }

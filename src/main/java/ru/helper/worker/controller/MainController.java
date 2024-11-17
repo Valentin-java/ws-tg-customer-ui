@@ -14,7 +14,6 @@ import ru.helper.worker.config.bot.BotConfig;
 import ru.helper.worker.controller.events.CommandReceivedEvent;
 import ru.helper.worker.controller.manager.UserContextManager;
 import ru.helper.worker.controller.model.UserInput;
-import ru.helper.worker.controller.process.GenericContext;
 
 import java.util.List;
 
@@ -63,11 +62,8 @@ public class MainController extends TelegramLongPollingBot {
             Long chatId = userInput.getChatId();
             String input = userInput.getInput();
 
-
-            GenericContext activeContext = contextManager.getActiveContext(chatId);
-            if (activeContext != null && activeContext.isActive()) {
-                // Передаем управление менеджеру процессов
-                activeContext.continueProcess(input);
+            if (contextManager.hasActiveContext(chatId)) {
+                contextManager.getActiveContext(chatId).continueProcess(input);
             } else {
                 eventPublisher.publishEvent(new CommandReceivedEvent(this, chatId, input, getUsername(update)));
             }
