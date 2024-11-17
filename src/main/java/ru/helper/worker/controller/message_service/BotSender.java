@@ -1,4 +1,4 @@
-package ru.helper.worker.controller.message;
+package ru.helper.worker.controller.message_service;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;

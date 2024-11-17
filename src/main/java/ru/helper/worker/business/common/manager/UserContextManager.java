@@ -1,10 +1,10 @@
-package ru.helper.worker.controller.manager;
+package ru.helper.worker.business.common.manager;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.helper.worker.controller.events.MessageSendEvent;
-import ru.helper.worker.controller.process.GenericContext;
+import ru.helper.worker.business.common.context.GenericContext;
 
 import java.time.LocalDateTime;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package ru.helper.worker.business.create_order.process.context;
 
 import lombok.Data;
-import ru.helper.worker.controller.process.GenericContext;
-import ru.helper.worker.controller.model.OrderRequest;
+import ru.helper.worker.business.common.context.GenericContext;
+import ru.helper.worker.business.create_order.model.OrderRequest;
 import ru.helper.worker.business.create_order.process.states.OrderState;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package ru.helper.worker.persistence;
+package ru.helper.worker.persistence.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

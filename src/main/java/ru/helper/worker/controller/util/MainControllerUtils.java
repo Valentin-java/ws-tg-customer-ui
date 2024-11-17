@@ -1,7 +1,7 @@
 package ru.helper.worker.controller.util;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.helper.worker.controller.model.UserInput;
+import ru.helper.worker.business.create_order.model.UserInput;
 
 public class MainControllerUtils {
 

@@ -1,4 +1,4 @@
-package ru.helper.worker.controller.model;
+package ru.helper.worker.business.create_order.model;
 
 public interface CommonConstants {
 

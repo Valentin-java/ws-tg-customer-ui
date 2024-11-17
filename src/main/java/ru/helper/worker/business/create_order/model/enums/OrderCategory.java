@@ -1,4 +1,4 @@
-package ru.helper.worker.controller.model.enums;
+package ru.helper.worker.business.create_order.model.enums;
 
 public enum OrderCategory {
     ELECTRICAL_WORKS(1, "Электромонтажные работы"),
