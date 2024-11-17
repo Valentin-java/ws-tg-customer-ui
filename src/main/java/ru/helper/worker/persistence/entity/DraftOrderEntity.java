@@ -15,6 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import ru.helper.worker.controller.model.enums.OrderCategory;
 import ru.helper.worker.persistence.enums.OrderStatus;
 import ru.helper.worker.persistence.enums.SendProcess;
 
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Entity
-@Table(name = "ws01_order", schema = "ws-order-management")
+@Table(name = "ws01_order_draft", schema = "ws-tg-ui")
 public class DraftOrderEntity {
 
     @Id
@@ -40,8 +41,9 @@ public class DraftOrderEntity {
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private String category;
+    private OrderCategory category;
 
     @Column(name = "short_description", nullable = false)
     private String shortDescription;
@@ -51,6 +53,9 @@ public class DraftOrderEntity {
 
     @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "address")
+    private String address;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

@@ -26,11 +26,11 @@ server:
       force: true
       charset: UTF-8
 
-ORDER_GATEWAY_URL: ${GATEWAY_URL:http://localhost:18763}
+ORDER_GATEWAY_URL: ${GATEWAY_URL:http://localhost:18889}
 
 auth:
   rest:
-    authUrl: ${ORDER_GATEWAY_URL}/v1/workers/auth/login
+    authUrl: ${ORDER_GATEWAY_URL}/ws-auth/v1/workers/auth/login
     username: ${AUTH_USERNAME}
     password: ${AUTH_PASSWORD}
 
@@ -38,7 +38,7 @@ feign:
   ws-auth:
     url: ${ORDER_GATEWAY_URL}
   ws-order:
-    url: ${ORDER_GATEWAY_URL}/v1/order/customer
+    url: ${ORDER_GATEWAY_URL}/ws-order/v1/order/customer
 
 jwt:
   public:
