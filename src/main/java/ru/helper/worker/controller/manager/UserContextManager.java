@@ -1,7 +1,7 @@
 package ru.helper.worker.controller.manager;
 
 import org.springframework.stereotype.Service;
-import ru.helper.worker.controller.process.UserContext;
+import ru.helper.worker.controller.process.GenericContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,9 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class UserContextManager {
 
-    private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
+    private final Map<Long, GenericContext> userContexts = new ConcurrentHashMap<>();
 
-    public void addContext(Long chatId, UserContext context) {
+    public void addContext(Long chatId, GenericContext context) {
         userContexts.put(chatId, context);
     }
 
@@ -19,12 +19,12 @@ public class UserContextManager {
         userContexts.remove(chatId);
     }
 
-    public UserContext getActiveContext(Long chatId) {
+    public GenericContext getActiveContext(Long chatId) {
         return userContexts.get(chatId);
     }
 
     public boolean hasActiveContext(Long chatId) {
-        UserContext context = userContexts.get(chatId);
+        GenericContext context = userContexts.get(chatId);
         return context != null && context.isActive();
     }
 }

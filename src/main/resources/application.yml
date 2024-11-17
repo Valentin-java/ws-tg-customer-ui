@@ -51,3 +51,8 @@ jwt:
 bot:
   name: SpringParserBot
   token: 7900784201:AAHuFoIWIdFpg4I2GHGC7fSPgsr2wo8cFek
+  command-list:
+    '/start': "Начать работу"
+    '/create_order': "Создать заказ"
+    '/my_active_order': "Мои активные заказы"
+    '/my_archive_order': "Заказы в архиве"

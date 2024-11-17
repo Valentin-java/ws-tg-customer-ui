@@ -8,8 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
+import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.controller.events.OrderProcessCompletedEvent;
-import ru.helper.worker.controller.message.MessageService;
 import ru.helper.worker.controller.model.OrderRequest;
 import ru.helper.worker.business.create_order.process.states.OrderState;
 import ru.helper.worker.rest.common.OrderClientService;
@@ -25,9 +25,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConfirmationState implements OrderState {
 
+    private static final String SEND_ERROR_MSG = "Произошла ошибка при публикации заказа. Пожалуйста, попробуйте позже.";
+    private static final String NOT_SENT_BY_USER_MSG = "Ваш заказ не был опубликован.";
+    private static final String NOT_SELECTED_BY_USER_MSG = "Пожалуйста, выберите 'Да' или 'Нет' с помощью кнопок ниже.";
+
     private final OrderClientService<OrderCreateRequestDto, OrderCreateResponseDto> orderClient;
     private final ApplicationEventPublisher eventPublisher;
-    private final MessageService messageService;
     private final OrderMapper mapper;
 
     @Override
@@ -36,21 +39,22 @@ public class ConfirmationState implements OrderState {
         if ("CONFIRM_YES".equals(input)) {
             OrderCreateResponseDto result = orderClient.doRequest(mapper.toRequest(context.getOrderRequest()));
             if (result != null) {
-                messageService.sendMessage(context.getChatId(), "Ваш заказ опубликован! \n id заказа: " + result.orderId());
+                eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), "Ваш заказ опубликован! \n id заказа: " + result.orderId()));
             } else {
-                messageService.sendMessage(context.getChatId(), "Произошла ошибка при публикации заказа. Пожалуйста, попробуйте позже.");
+                eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), SEND_ERROR_MSG));
+                // здесь надо прихранить черновик
             }
             updateState(context);
         } else if ("CONFIRM_NO".equals(input)) {
-            messageService.sendMessage(context.getChatId(), "Ваш заказ не был опубликован.");
+            eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), NOT_SENT_BY_USER_MSG));
             updateState(context);
         } else {
-            messageService.sendMessage(context.getChatId(), "Пожалуйста, выберите 'Да' или 'Нет' с помощью кнопок ниже.");
+            eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), NOT_SELECTED_BY_USER_MSG));
         }
     }
 
     @Override
-    public void enter(OrderContext context) throws TelegramApiException {
+    public void enter(OrderContext context) {
         OrderRequest orderRequest = context.getOrderRequest();
 
         String summary = String.format(
@@ -76,7 +80,7 @@ public class ConfirmationState implements OrderState {
 
         InlineKeyboardMarkup keys = InlineKeyboardMarkup.builder().keyboard(buttons).build();
 
-        messageService.sendMessage(context.getChatId(), summary, keys);
+        eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), summary, keys));
     }
 
     @Override

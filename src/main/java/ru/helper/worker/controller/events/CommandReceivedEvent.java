@@ -1,4 +1,4 @@
-package ru.helper.worker.controller.events.command_event;
+package ru.helper.worker.controller.events;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

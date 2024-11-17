@@ -3,10 +3,10 @@ package ru.helper.worker.business.create_order.process.states.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
-import ru.helper.worker.controller.message.MessageService;
+import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.business.create_order.process.states.OrderState;
 
 @Slf4j
@@ -14,14 +14,16 @@ import ru.helper.worker.business.create_order.process.states.OrderState;
 @RequiredArgsConstructor
 public class AddressState implements OrderState {
 
+    private static final String EMPTY_ADDRESS_MSG = "Адрес не может быть пустым. Пожалуйста, введите адрес.";
+
     private final ConfirmationState nextState;
-    private final MessageService messageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public void handleInput(OrderContext context, String input) throws TelegramApiException {
+    public void handleInput(OrderContext context, String input) {
         log.debug("Handling input in AddressState for chatId {}: {}", context.getChatId(), input);
         if (input.trim().isEmpty()) {
-            messageService.sendMessage(context.getChatId(), "Адрес не может быть пустым. Пожалуйста, введите адрес.");
+            eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), EMPTY_ADDRESS_MSG));
             context.setInputValid(false);
         } else {
             context.getOrderRequest().setAddress(input);
@@ -30,8 +32,8 @@ public class AddressState implements OrderState {
     }
 
     @Override
-    public void enter(OrderContext context) throws TelegramApiException {
-        messageService.sendMessage(context.getChatId(), "Укажите адрес:");
+    public void enter(OrderContext context) {
+        eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), "Укажите адрес:"));
     }
 
     @Override
