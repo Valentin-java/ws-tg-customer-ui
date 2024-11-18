@@ -25,7 +25,7 @@ public class CreateExternalClientImpl implements ExternalClientService<OrderCrea
             return response;
         } catch (Exception e) {
             log.error("Error occurred while sending order creation request: {}", request, e);
-            return ResponseEntity.internalServerError().build(); // Возвращаем более корректный код ошибки
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
