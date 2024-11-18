@@ -12,6 +12,7 @@ import ru.helper.worker.rest.create_order.model.OrderCreateRequestDto;
 public interface OrderMapper {
 
     @Mapping(target = "category", source = "category", qualifiedByName = "getCategoryCode")
+    @Mapping(target = "draftId", ignore = true)
     OrderCreateRequestDto toRequest(OrderRequest source);
 
     @Named("getCategoryCode")
