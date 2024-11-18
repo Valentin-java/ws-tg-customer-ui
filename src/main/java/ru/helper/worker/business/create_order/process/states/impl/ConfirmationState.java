@@ -72,7 +72,12 @@ public class ConfirmationState implements OrderState {
         OrderRequest orderRequest = context.getOrderRequest();
 
         String summary = String.format(
-                "Ваш заказ:\n\nКатегория: %s\nКраткое описание: %s\nДетальное описание: %s\nСтоимость: %s\nАдрес: %s\n\nОпубликовать заказ?",
+                "Ваш заказ:\n\nКатегория: %s" +
+                        "\nКраткое описание: %s" +
+                        "\nДетальное описание: %s" +
+                        "\nСтоимость: %s" +
+                        "\nАдрес: %s" +
+                        "\n\nОпубликовать заказ?",
                 orderRequest.getCategory().getDescription(),
                 orderRequest.getShortDescription(),
                 orderRequest.getDetailedDescription(),

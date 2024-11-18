@@ -2,9 +2,12 @@ package ru.helper.worker.persistence.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import ru.helper.worker.business.create_order.model.enums.OrderCategory;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
 import ru.helper.worker.config.mapper.MapperConfiguration;
 import ru.helper.worker.persistence.entity.DraftOrderEntity;
+import ru.helper.worker.rest.create_order.model.OrderCreateRequestDto;
 
 @Mapper(config = MapperConfiguration.class)
 public interface DraftOrderMapper {
@@ -22,4 +25,13 @@ public interface DraftOrderMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "sendProcess", ignore = true)
     DraftOrderEntity toEntity(OrderContext source);
+
+    @Mapping(target = "draftId", source = "id")
+    @Mapping(target = "category", source = "category", qualifiedByName = "getCategoryCode")
+    OrderCreateRequestDto toRequest(DraftOrderEntity source);
+
+    @Named("getCategoryCode")
+    default Integer getCategoryCode(OrderCategory source) {
+        return source.getCode();
+    }
 }

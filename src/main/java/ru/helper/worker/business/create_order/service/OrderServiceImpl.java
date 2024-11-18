@@ -8,7 +8,6 @@ import ru.helper.worker.business.create_order.interfaces.OrderService;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
 import ru.helper.worker.business.create_order.process.states.OrderState;
 import ru.helper.worker.business.common.manager.UserContextManager;
-
 @Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -29,6 +28,7 @@ public class OrderServiceImpl implements OrderService {
         OrderContext context = new OrderContext(chatId);
         context.setCurrentState(initOrderState);
         context.getOrderRequest().setCustomerId(username);
+        context.getOrderRequest().setChatId(chatId);
         contextManager.addContext(chatId, context);
         context.getCurrentState().enter(context);
     }

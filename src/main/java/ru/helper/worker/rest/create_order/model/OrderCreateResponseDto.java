@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 
 public record OrderCreateResponseDto(
         Long orderId,
+        Long draftId,
         Long customerId,
+        Long chatId,
         String category,
         String shortDescription,
         String detailedDescription,

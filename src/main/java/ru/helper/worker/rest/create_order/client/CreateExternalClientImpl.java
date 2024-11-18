@@ -19,10 +19,13 @@ public class CreateExternalClientImpl implements ExternalClientService<OrderCrea
     @Override
     public ResponseEntity<OrderCreateResponseDto> doRequest(OrderCreateRequestDto request) {
         try {
-            return service.createOrder(request);
+            log.info("Sending request to create order: {}", request);
+            ResponseEntity<OrderCreateResponseDto> response = service.createOrder(request);
+            log.info("Received response: {}", response);
+            return response;
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            log.error("Error occurred while sending order creation request: {}", request, e);
+            return ResponseEntity.internalServerError().build();
         }
-
     }
 }
