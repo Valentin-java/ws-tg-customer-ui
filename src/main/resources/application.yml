@@ -38,7 +38,11 @@ feign:
   ws-auth:
     url: ${ORDER_GATEWAY_URL}
   ws-order:
-    url: ${ORDER_GATEWAY_URL}/ws-order/v1/order/customer
+    order:
+      url: ${ORDER_GATEWAY_URL}/ws-order/v1/order/customer
+    bid:
+      url: ${ORDER_GATEWAY_URL}/ws-order/v1/bid
+
 
 jwt:
   public:

@@ -7,7 +7,7 @@ import ru.helper.worker.business.create_order.model.enums.OrderCategory;
 import ru.helper.worker.business.create_order.process.context.OrderContext;
 import ru.helper.worker.config.mapper.MapperConfiguration;
 import ru.helper.worker.persistence.entity.DraftOrderEntity;
-import ru.helper.worker.rest.create_order.model.OrderCreateRequestDto;
+import ru.helper.worker.rest.external.create_order.model.OrderCreateRequest;
 
 @Mapper(config = MapperConfiguration.class)
 public interface DraftOrderMapper {
@@ -28,7 +28,7 @@ public interface DraftOrderMapper {
 
     @Mapping(target = "draftId", source = "id")
     @Mapping(target = "category", source = "category", qualifiedByName = "getCategoryCode")
-    OrderCreateRequestDto toRequest(DraftOrderEntity source);
+    OrderCreateRequest toRequest(DraftOrderEntity source);
 
     @Named("getCategoryCode")
     default Integer getCategoryCode(OrderCategory source) {

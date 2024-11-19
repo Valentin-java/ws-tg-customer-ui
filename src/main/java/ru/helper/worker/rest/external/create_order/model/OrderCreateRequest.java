@@ -1,8 +1,8 @@
-package ru.helper.worker.rest.create_order.model;
+package ru.helper.worker.rest.external.create_order.model;
 
 import java.math.BigDecimal;
 
-public record OrderCreateRequestDto(
+public record OrderCreateRequest(
         Long draftId,
         String customerId,
         Long chatId,

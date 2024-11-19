@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.helper.worker.config.bot.BotConfig;
 
@@ -18,8 +20,13 @@ public class BotSenderImpl extends DefaultAbsSender implements BotSender {
     }
 
     @Override
-    public void sendMessage(SendMessage message) throws TelegramApiException {
-        execute(message);
+    public Message sendMessage(SendMessage message) throws TelegramApiException {
+        return execute(message);
+    }
+
+    @Override
+    public void editMessage(EditMessageText editMessage) throws TelegramApiException {
+        execute(editMessage);
     }
 
     @Override
