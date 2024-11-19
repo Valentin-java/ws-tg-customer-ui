@@ -16,10 +16,10 @@ import ru.helper.worker.persistence.mapper.DraftOrderMapper;
 import ru.helper.worker.persistence.enums.OrderStatus;
 import ru.helper.worker.persistence.enums.SendProcess;
 import ru.helper.worker.persistence.repository.DraftOrderRepository;
-import ru.helper.worker.rest.common.ExternalClientService;
-import ru.helper.worker.rest.create_order.mapper.OrderMapper;
-import ru.helper.worker.rest.create_order.model.OrderCreateRequestDto;
-import ru.helper.worker.rest.create_order.model.OrderCreateResponseDto;
+import ru.helper.worker.rest.external.common.ExternalClientService;
+import ru.helper.worker.rest.external.create_order.mapper.OrderMapper;
+import ru.helper.worker.rest.external.create_order.model.OrderCreateRequest;
+import ru.helper.worker.rest.external.create_order.model.OrderCreateResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ConfirmationState implements OrderState {
     private static final String NOT_SELECTED_BY_USER_MSG = "Пожалуйста, выберите 'Да' или 'Нет' с помощью кнопок ниже.";
     private static final String SENT_BY_SUCCESS_MSG = "Ваш заказ опубликован! \n id заказа: %s";
 
-    private final ExternalClientService<OrderCreateRequestDto, ResponseEntity<OrderCreateResponseDto>> orderClient;
+    private final ExternalClientService<OrderCreateRequest, ResponseEntity<OrderCreateResponseDto>> orderClient;
     private final ApplicationEventPublisher eventPublisher;
     private final DraftOrderRepository orderRepository;
     private final DraftOrderMapper draftOrderMapper;
@@ -72,7 +72,8 @@ public class ConfirmationState implements OrderState {
         OrderRequest orderRequest = context.getOrderRequest();
 
         String summary = String.format(
-                "Ваш заказ:\n\nКатегория: %s" +
+                "Ваш заказ:" +
+                        "\n\nКатегория: %s" +
                         "\nКраткое описание: %s" +
                         "\nДетальное описание: %s" +
                         "\nСтоимость: %s" +
@@ -86,19 +87,9 @@ public class ConfirmationState implements OrderState {
         );
 
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        buttons.add(List.of(
-                InlineKeyboardButton.builder()
-                        .text("Да")
-                        .callbackData("CONFIRM_YES")
-                        .build(),
-                InlineKeyboardButton.builder()
-                        .text("Нет")
-                        .callbackData("CONFIRM_NO")
-                        .build()
-        ));
+        buttons.add(getUpperRowInlineButtons());
 
         InlineKeyboardMarkup keys = InlineKeyboardMarkup.builder().keyboard(buttons).build();
-
         eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), summary, keys));
     }
 
@@ -106,5 +97,17 @@ public class ConfirmationState implements OrderState {
     public void updateState(OrderContext context) {
         // Завершаем процесс
         eventPublisher.publishEvent(new OrderProcessCompletedEvent(this, context.getChatId()));
+    }
+
+    private List<InlineKeyboardButton> getUpperRowInlineButtons() {
+        return List.of(
+                InlineKeyboardButton.builder()
+                        .text("Да")
+                        .callbackData("CONFIRM_YES")
+                        .build(),
+                InlineKeyboardButton.builder()
+                        .text("Нет")
+                        .callbackData("CONFIRM_NO")
+                        .build());
     }
 }

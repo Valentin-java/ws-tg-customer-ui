@@ -1,4 +1,4 @@
-package ru.helper.worker.rest.create_order.model;
+package ru.helper.worker.rest.external.create_order.model;
 
 import java.time.LocalDateTime;
 

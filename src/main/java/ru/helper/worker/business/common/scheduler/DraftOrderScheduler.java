@@ -13,9 +13,9 @@ import ru.helper.worker.persistence.enums.OrderStatus;
 import ru.helper.worker.persistence.enums.SendProcess;
 import ru.helper.worker.persistence.mapper.DraftOrderMapper;
 import ru.helper.worker.persistence.repository.DraftOrderRepository;
-import ru.helper.worker.rest.common.ExternalClientService;
-import ru.helper.worker.rest.create_order.model.OrderCreateRequestDto;
-import ru.helper.worker.rest.create_order.model.OrderCreateResponseDto;
+import ru.helper.worker.rest.external.common.ExternalClientService;
+import ru.helper.worker.rest.external.create_order.model.OrderCreateRequest;
+import ru.helper.worker.rest.external.create_order.model.OrderCreateResponseDto;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class DraftOrderScheduler {
 
-    private final ExternalClientService<OrderCreateRequestDto, ResponseEntity<OrderCreateResponseDto>> orderClient;
+    private final ExternalClientService<OrderCreateRequest, ResponseEntity<OrderCreateResponseDto>> orderClient;
     private final ApplicationEventPublisher eventPublisher;
     private final DraftOrderRepository orderRepository;
     private final DraftOrderMapper draftOrderMapper;

@@ -3,6 +3,8 @@ package ru.helper.worker.controller.message_service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -12,20 +14,31 @@ public class MessageService {
 
     private final BotSender botSender;
 
-    public void sendMessage(Long chatId, String text) throws TelegramApiException {
+    public Integer sendMessage(Long chatId, String text) throws TelegramApiException {
         SendMessage message = SendMessage.builder()
                 .chatId(chatId.toString())
                 .text(text)
                 .build();
-        botSender.sendMessage(message);
+        Message sentMessage = botSender.sendMessage(message);
+        return sentMessage.getMessageId();
     }
 
-    public void sendMessage(Long chatId, String text, InlineKeyboardMarkup keyboard) throws TelegramApiException {
+    public Integer sendMessage(Long chatId, String text, InlineKeyboardMarkup keyboard) throws TelegramApiException {
         SendMessage message = SendMessage.builder()
                 .chatId(chatId.toString())
                 .text(text)
                 .replyMarkup(keyboard)
                 .build();
-        botSender.sendMessage(message);
+        Message sentMessage = botSender.sendMessage(message);
+        return sentMessage.getMessageId();
+    }
+
+    public void editMessage(Long chatId, Integer messageId, String newText) throws TelegramApiException {
+        EditMessageText editMessage = EditMessageText.builder()
+                .chatId(chatId.toString())
+                .messageId(messageId)
+                .text(newText)
+                .build();
+        botSender.editMessage(editMessage);
     }
 }
