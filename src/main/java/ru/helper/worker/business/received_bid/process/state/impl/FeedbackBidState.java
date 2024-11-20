@@ -45,9 +45,9 @@ public class FeedbackBidState implements BidState {
     @Override
     public void handleInput(BidContext context, String input) {
         try {
-            int rating = Integer.parseInt(input); // Парсим рейтинг из callbackData
-            saveRating(context, rating); // Сохраняем рейтинг
-            sendThankYouMessage(context); // Отправляем сообщение благодарности
+            int rating = Integer.parseInt(input);
+            saveRating(context, rating);
+            sendThankYouMessage(context);
             updateState(context);
         } catch (NumberFormatException e) {
             log.error("Invalid input received for rating: {}", input);
