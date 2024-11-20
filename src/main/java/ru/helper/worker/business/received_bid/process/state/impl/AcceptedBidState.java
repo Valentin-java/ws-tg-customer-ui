@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.helper.worker.business.received_bid.process.context.BidContext;
 import ru.helper.worker.business.received_bid.process.state.BidState;
-import ru.helper.worker.business.received_bid.strategy.BidCasesStrategy;
 import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.controller.events.OrderProcessCompletedEvent;
 
@@ -18,14 +17,12 @@ import java.util.List;
 import static ru.helper.worker.business.received_bid.model.enums.BidReceivePayloadEnum.REJECT_BID;
 import static ru.helper.worker.business.received_bid.model.enums.BidReceivePayloadEnum.SUCCESS_BID;
 
-// Здесь поздравим с успешным завершением поиска специалиста, предложим нажать на кнопку завершить
-// когда исполнитель завершит работы, затем предложим написать отзыв о проделанной работе
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class AcceptedBidState implements BidState {
 
-    private static final String NOTICE_MESSAGE = "Похоже что предложение данного мастера Вас не устроило. " +
+    private static final String NOTICE_MESSAGE = "Похоже что предложение данного мастера Вас не заинтересовало. " +
             "\n Будем искать дальше.";
 
     private final ApplicationEventPublisher eventPublisher;
@@ -38,8 +35,6 @@ public class AcceptedBidState implements BidState {
             return;
         }
         if (REJECT_BID.name().equals(input)) {
-            // Уведомление мастеру
-            // Смена статуса bid
             eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), NOTICE_MESSAGE));
             eventPublisher.publishEvent(new OrderProcessCompletedEvent(this, context.getChatId()));
         }
