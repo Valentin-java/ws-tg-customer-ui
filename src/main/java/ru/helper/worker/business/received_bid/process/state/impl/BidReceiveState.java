@@ -23,7 +23,6 @@ import static ru.helper.worker.business.received_bid.model.enums.BidReceivePaylo
 import static ru.helper.worker.business.received_bid.model.enums.BidReceivePayloadEnum.INFO_BID;
 import static ru.helper.worker.business.received_bid.model.enums.BidReceivePayloadEnum.REJECT_BID;
 import static ru.helper.worker.business.received_bid.model.enums.BidReceivePayloadEnum.SEND_MESSAGE_BID;
-import static ru.helper.worker.business.received_bid.model.enums.BidReceivePayloadEnum.SUCCESS_BID;
 
 /**
  * Пришел отзыв от мастера.
@@ -40,9 +39,9 @@ import static ru.helper.worker.business.received_bid.model.enums.BidReceivePaylo
 public class BidReceiveState implements BidState {
 
     private static final String FAILED_MSG = "Извините, но похоже на то, что предложение от исполнителя уже не актуально. " +
-            "\n Не огорчайтесь, будем искать дальше.";
+            "\nНе огорчайтесь, будем искать дальше.";
     private static final String NOTICE_MESSAGE = "Похоже что предложение данного мастера Вас не заинтересовало. " +
-            "\n Будем искать дальше.";
+            "\nБудем искать дальше.";
 
     ExternalClientService<BidChangeStatusRequest, ResponseEntity<Void>> clientService;
     private final ApplicationEventPublisher eventPublisher;
@@ -53,19 +52,18 @@ public class BidReceiveState implements BidState {
         var orderId = context.getRequest().orderId();
         var bidId = context.getRequest().bidId();
         if (ACCEPT_BID.name().equals(input)) {
-//            var request = new BidChangeStatusRequest(orderId, bidId);
-//            var response = clientService.doRequest(request);
-//
-//            // Проверяем ответ
-//            if (response != null && response.hasBody() && response.getStatusCode().is2xxSuccessful()) {
-//                log.warn("Success to process accept bid order with ID: {}", orderId);
-//                updateState(context);
-//            } else {
-//                log.warn("Failed to process accept bid order with ID: {}", orderId);
-//                eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), FAILED_MSG));
-//                eventPublisher.publishEvent(new OrderProcessCompletedEvent(this, context.getChatId()));
-//            }
-            updateState(context);
+            var request = new BidChangeStatusRequest(orderId, bidId);
+            var response = clientService.doRequest(request);
+
+            // Проверяем ответ
+            if (response != null && response.hasBody() && response.getStatusCode().is2xxSuccessful()) {
+                log.warn("Success to process accept bid order with ID: {}", orderId);
+                updateState(context);
+            } else {
+                log.warn("Failed to process accept bid order with ID: {}", orderId);
+                eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), FAILED_MSG));
+                eventPublisher.publishEvent(new OrderProcessCompletedEvent(this, context.getChatId()));
+            }
         }
         if (REJECT_BID.name().equals(input)) {
             eventPublisher.publishEvent(new MessageEditEvent(this, context.getChatId(), context.getMessageIdActualState(), NOTICE_MESSAGE));
