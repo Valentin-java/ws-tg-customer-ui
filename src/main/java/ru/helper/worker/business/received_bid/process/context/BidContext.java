@@ -31,6 +31,5 @@ public class BidContext implements GenericContext {
     @Override
     public void continueProcess(String input) {
         currentState.handleInput(this, input);
-        currentState.updateState(this);
     }
 }
