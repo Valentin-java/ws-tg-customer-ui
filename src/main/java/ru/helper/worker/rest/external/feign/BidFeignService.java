@@ -8,7 +8,7 @@ import ru.helper.worker.rest.external.bid.model.BidChangeStatusRequest;
 import ru.helper.worker.rest.external.bid.model.FeedbackHandymanRequest;
 
 @FeignClient(
-        name = "OrderFeignService",
+        name = "BidFeignService",
         url = "${feign.ws-order.bid.url}"
 )
 public interface BidFeignService {

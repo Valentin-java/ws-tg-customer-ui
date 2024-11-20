@@ -27,7 +27,7 @@ import static ru.helper.worker.business.received_bid.model.enums.BidReceivePaylo
  * Пришел отзыв от мастера.
  * Мы публикуем об этом сообщение, предупреждаем что время жизни предложения ограничен. (т.о. чистим память приложения)
  * Кейсы:
- * BidReceiveState -> AcceptedBidCase -> AcceptedBidState -> CompletedBidState -> FeedbackBidCase ->
+ * BidReceiveState -> AcceptedBidState -> CompletedBidState -> FeedbackBidCase ->
  * Отказаться от предложения ->
  * Задать вопрос исполнителю ->
  * Подробнее про исполнителя ->

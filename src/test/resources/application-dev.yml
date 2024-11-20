@@ -33,7 +33,10 @@ feign:
   ws-auth:
     url: ${ORDER_GATEWAY_URL}
   ws-order:
-    url: ${ORDER_GATEWAY_URL}/v1/order/customer
+    order:
+      url: ${ORDER_GATEWAY_URL}/v1/order/customer
+    bid:
+      url: ${ORDER_GATEWAY_URL}/ws-order/v1/bid
 
 jwt:
   public:
@@ -42,6 +45,14 @@ jwt:
     expiration: 3600000
   refresh-token:
     expiration: 36000000
+
+order-service:
+  executor:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 100
+  scheduler:
+    fixed-rate: 3600000
 
 bot:
   name: SpringParserBot
