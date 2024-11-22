@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("dev")
-class WorkerApplicationTests {
+class ApplicationTests {
 
 	@MockBean
 	private DraftOrderScheduler draftOrderScheduler;
