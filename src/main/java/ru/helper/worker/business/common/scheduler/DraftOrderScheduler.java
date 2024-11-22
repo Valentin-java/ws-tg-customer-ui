@@ -3,7 +3,6 @@ package ru.helper.worker.business.common.scheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,7 @@ import ru.helper.worker.persistence.enums.OrderStatus;
 import ru.helper.worker.persistence.enums.SendProcess;
 import ru.helper.worker.persistence.mapper.DraftOrderMapper;
 import ru.helper.worker.persistence.repository.DraftOrderRepository;
-import ru.helper.worker.rest.external.common.ExternalClientService;
-import ru.helper.worker.rest.external.create_order.model.OrderCreateRequest;
-import ru.helper.worker.rest.external.create_order.model.OrderCreateResponseDto;
+import ru.helper.worker.rest.external.create_order.interfaces.CreateOrderClient;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -24,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class DraftOrderScheduler {
 
-    private final ExternalClientService<OrderCreateRequest, ResponseEntity<OrderCreateResponseDto>> orderClient;
+    private final CreateOrderClient createOrderClient;
     private final ApplicationEventPublisher eventPublisher;
     private final DraftOrderRepository orderRepository;
     private final DraftOrderMapper draftOrderMapper;
@@ -54,7 +51,7 @@ public class DraftOrderScheduler {
 
             // Преобразуем черновик в DTO и отправляем запрос
             var request = draftOrderMapper.toRequest(draft);
-            var response = orderClient.doRequest(request);
+            var response = createOrderClient.doRequest(request);
 
             // Проверяем ответ
             if (response == null || !response.getStatusCode().is2xxSuccessful() || !response.hasBody()) {

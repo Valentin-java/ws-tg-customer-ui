@@ -3,7 +3,6 @@ package ru.helper.worker.business.received_bid.process.state.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -13,7 +12,7 @@ import ru.helper.worker.controller.events.MessageEditEvent;
 import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.controller.events.OrderProcessCompletedEvent;
 import ru.helper.worker.rest.external.bid.model.FeedbackHandymanRequest;
-import ru.helper.worker.rest.external.common.ExternalClientService;
+import ru.helper.worker.rest.external.feedback.interfaces.FeedbackBidClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +30,15 @@ import java.util.concurrent.CompletableFuture;
 public class FeedbackBidState implements BidState {
 
     private static final String RATING_REQUEST_MESSAGE = "На сколько вы остались довольны выполненной работой мастера:" +
-            "\n\n5 - Очень доволен. Рекомендую." +
-            "\n4 - Хорошо выполнил свою работу." +
-            "\n3 - Удовлетворительно выполнил свою работу." +
-            "\n2 - Очень плохо. Никому не пожелаю иметь с ним дело." +
-            "\n1 - Были проблемы. Остался недоволен.";
+            "\n\n5 - Обнял - приподнял. Очень благодарен." +
+            "\n4 - Жму крепку руку. Нормальный мастер." +
+            "\n3 - Нормально сделал, но есть косяки." +
+            "\n2 - Плохо. Никому не пожелаю." +
+            "\n1 - Были проблемы. Даже врагу не пожелаю.";
 
     private static final String THANK_YOU_MESSAGE = "Спасибо за вашу оценку! Мы рады, что вы воспользовались нашим сервисом.";
 
-    private final ExternalClientService<FeedbackHandymanRequest, ResponseEntity<Void>> clientService;
+    private final FeedbackBidClient feedbackBidClient;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -89,8 +88,8 @@ public class FeedbackBidState implements BidState {
                 context.getRequest().offer().specialistId(),
                 context.getRequest().orderId(), 
                 rating);
-        
-        clientService.doRequest(request);
+
+        feedbackBidClient.doRequest(request);
     }
 
     private void sendThankYouMessage(BidContext context) {

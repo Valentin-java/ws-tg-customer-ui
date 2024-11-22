@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.helper.worker.rest.external.bid.model.BidChangeStatusRequest;
-import ru.helper.worker.rest.external.bid.model.FeedbackHandymanRequest;
 
 @FeignClient(
         name = "BidFeignService",
@@ -18,7 +17,4 @@ public interface BidFeignService {
 
     @PostMapping("/reject")
     ResponseEntity<Void> rejectBid(@RequestBody BidChangeStatusRequest request);
-
-    @PostMapping("/feedback")
-    ResponseEntity<Void> feedbackBid(@RequestBody FeedbackHandymanRequest request);
 }
