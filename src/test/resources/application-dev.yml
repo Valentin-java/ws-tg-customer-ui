@@ -55,8 +55,8 @@ order-service:
     fixed-rate: 3600000
 
 bot:
-  name:
-  token:
+  name: ICQMasterBot
+  token: 7619871226:AAH_FVOnzzaOsY8tiiu_nHrcPbgIJNKSQXs
   command-list:
     /start: "Начать работу"
     /create_order: "Создать заказ"
