@@ -8,8 +8,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.helper.worker.business.received_bid.process.context.BidContext;
 import ru.helper.worker.business.received_bid.process.state.BidState;
+import ru.helper.worker.controller.events.MessageEditEvent;
 import ru.helper.worker.controller.events.MessageSendEvent;
 import ru.helper.worker.controller.events.OrderProcessCompletedEvent;
+import ru.helper.worker.rest.external.bid.interfaces.RejectBidClient;
+import ru.helper.worker.rest.external.bid.model.BidChangeStatusRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,10 @@ public class AcceptedBidState implements BidState {
 
     private static final String NOTICE_MESSAGE = "Похоже что предложение данного мастера Вас не заинтересовало. " +
             "\n Будем искать дальше.";
+    private static final String WARNING_MESSAGE = "Похоже что в процессе произошла ошибка. В любом случае мы отменили заявку. " +
+            "\nПри необходимости обратитесь в поддержку.";
 
+    private final RejectBidClient rejectBidClient;
     private final ApplicationEventPublisher eventPublisher;
     private final CompletedBidState nextState;
 
@@ -35,8 +41,20 @@ public class AcceptedBidState implements BidState {
             return;
         }
         if (REJECT_BID.name().equals(input)) {
-            eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), NOTICE_MESSAGE));
+            var orderId = context.getRequest().orderId();
+            var bidId = context.getRequest().bidId();
+
+            var request = new BidChangeStatusRequest(orderId, bidId);
+            var response = rejectBidClient.doRequest(request);
+
+            if (response != null && response.hasBody() && response.getStatusCode().is2xxSuccessful()) {
+                log.warn("Success to process reject bid order with ID: {}", orderId);
+                eventPublisher.publishEvent(new MessageEditEvent(this, context.getChatId(), context.getMessageIdActualState(), NOTICE_MESSAGE));
+            } else {
+                eventPublisher.publishEvent(new MessageEditEvent(this, context.getChatId(), context.getMessageIdActualState(), WARNING_MESSAGE));
+            }
             eventPublisher.publishEvent(new OrderProcessCompletedEvent(this, context.getChatId()));
+
         }
 
     }
@@ -65,7 +83,7 @@ public class AcceptedBidState implements BidState {
                         .callbackData(SUCCESS_BID.name())
                         .build(),
                 InlineKeyboardButton.builder()
-                        .text("Отказаться от услуг исполнителя.")
+                        .text("Отказаться от мастера")
                         .callbackData(REJECT_BID.name())
                         .build());
     }

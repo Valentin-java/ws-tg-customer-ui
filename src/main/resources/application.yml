@@ -42,6 +42,8 @@ feign:
       url: ${ORDER_GATEWAY_URL}/ws-order/v1/order/customer
     bid:
       url: ${ORDER_GATEWAY_URL}/ws-order/v1/bid
+    feedback:
+      url: ${ORDER_GATEWAY_URL}/ws-order/v1/feedback
 
 
 jwt:
@@ -61,8 +63,8 @@ order-service:
     fixed-rate: 3600000
 
 bot:
-  name: SpringParserBot
-  token: 7900784201:AAHuFoIWIdFpg4I2GHGC7fSPgsr2wo8cFek
+  name: ICQMasterBot
+  token: 7619871226:AAH_FVOnzzaOsY8tiiu_nHrcPbgIJNKSQXs
   command-list:
     '/start': "Начать работу"
     '/create_order': "Создать заказ"

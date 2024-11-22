@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.helper.worker.rest.external.common.ExternalClientService;
+import ru.helper.worker.rest.external.create_order.interfaces.CreateOrderClient;
 import ru.helper.worker.rest.external.create_order.model.OrderCreateRequest;
 import ru.helper.worker.rest.external.create_order.model.OrderCreateResponseDto;
 import ru.helper.worker.rest.external.feign.OrderFeignService;
@@ -12,7 +12,7 @@ import ru.helper.worker.rest.external.feign.OrderFeignService;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CreateExternalClientImpl implements ExternalClientService<OrderCreateRequest, ResponseEntity<OrderCreateResponseDto>> {
+public class CreateOrderClientImpl implements CreateOrderClient {
 
     private final OrderFeignService service;
 

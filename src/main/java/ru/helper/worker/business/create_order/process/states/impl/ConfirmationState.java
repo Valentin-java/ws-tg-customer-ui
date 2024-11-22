@@ -16,10 +16,8 @@ import ru.helper.worker.persistence.mapper.DraftOrderMapper;
 import ru.helper.worker.persistence.enums.OrderStatus;
 import ru.helper.worker.persistence.enums.SendProcess;
 import ru.helper.worker.persistence.repository.DraftOrderRepository;
-import ru.helper.worker.rest.external.common.ExternalClientService;
+import ru.helper.worker.rest.external.create_order.interfaces.CreateOrderClient;
 import ru.helper.worker.rest.external.create_order.mapper.OrderMapper;
-import ru.helper.worker.rest.external.create_order.model.OrderCreateRequest;
-import ru.helper.worker.rest.external.create_order.model.OrderCreateResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,7 @@ public class ConfirmationState implements OrderState {
     private static final String NOT_SELECTED_BY_USER_MSG = "Пожалуйста, выберите 'Да' или 'Нет' с помощью кнопок ниже.";
     private static final String SENT_BY_SUCCESS_MSG = "Ваш заказ опубликован! \n id заказа: %s";
 
-    private final ExternalClientService<OrderCreateRequest, ResponseEntity<OrderCreateResponseDto>> orderClient;
+    private final CreateOrderClient createOrderClient;
     private final ApplicationEventPublisher eventPublisher;
     private final DraftOrderRepository orderRepository;
     private final DraftOrderMapper draftOrderMapper;
@@ -47,7 +45,7 @@ public class ConfirmationState implements OrderState {
         if ("CONFIRM_YES".equals(input)) {
 
             var order = mapper.toRequest(context.getOrderRequest());
-            var response = orderClient.doRequest(order);
+            var response = createOrderClient.doRequest(order);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 eventPublisher.publishEvent(new MessageSendEvent(this, context.getChatId(), String.format(SENT_BY_SUCCESS_MSG, response.getBody().orderId())));
