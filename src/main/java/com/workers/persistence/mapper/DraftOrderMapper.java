@@ -7,7 +7,7 @@ import com.workers.business.create_order.model.enums.OrderCategory;
 import com.workers.business.create_order.process.context.OrderContext;
 import com.workers.config.mapper.MapperConfiguration;
 import com.workers.persistence.entity.DraftOrderEntity;
-import com.workers.rest.external.create_order.model.OrderCreateRequest;
+import com.workers.rest.create_order.model.OrderCreateRequest;
 
 @Mapper(config = MapperConfiguration.class)
 public interface DraftOrderMapper {

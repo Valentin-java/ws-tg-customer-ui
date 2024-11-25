@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Entity
-@Table(name = "ws01_order_draft", schema = "ws-tg-ui")
+@Table(name = "ws01_order_draft", schema = "ws-tg-customer-ui")
 public class DraftOrderEntity {
 
     @Id

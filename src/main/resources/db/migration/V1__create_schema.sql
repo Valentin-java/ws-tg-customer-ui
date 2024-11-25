@@ -1,1 +1,1 @@
-CREATE SCHEMA IF NOT EXISTS "ws-tg-ui";
+CREATE SCHEMA IF NOT EXISTS "ws-tg-customer-ui";
