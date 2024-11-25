@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import com.workers.config.bot.BotConfig;
 import com.workers.controller.events.CommandReceivedEvent;
-import com.workers.business.create_order.model.UserInput;
+import com.workers.controller.model.UserInput;
 
 import java.util.List;
 

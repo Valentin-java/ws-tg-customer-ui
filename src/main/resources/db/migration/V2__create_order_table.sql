@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "ws-tg-ui"."ws01_order_draft" (
+CREATE TABLE IF NOT EXISTS "ws-tg-customer-ui"."ws01_order_draft" (
     id BIGSERIAL NOT NULL,
     customer_id VARCHAR(100) NOT NULL,
     chat_id BIGINT NOT NULL,

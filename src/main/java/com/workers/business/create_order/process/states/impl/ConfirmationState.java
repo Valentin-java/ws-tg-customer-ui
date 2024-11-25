@@ -15,8 +15,8 @@ import com.workers.persistence.mapper.DraftOrderMapper;
 import com.workers.persistence.enums.OrderStatus;
 import com.workers.persistence.enums.SendProcess;
 import com.workers.persistence.repository.DraftOrderRepository;
-import com.workers.rest.external.create_order.interfaces.CreateOrderClient;
-import com.workers.rest.external.create_order.mapper.OrderMapper;
+import com.workers.rest.create_order.interfaces.CreateOrderClient;
+import com.workers.rest.create_order.mapper.OrderMapper;
 
 import java.util.ArrayList;
 import java.util.List;
