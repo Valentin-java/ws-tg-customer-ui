@@ -99,11 +99,11 @@ public class ConfirmationState implements OrderState {
     private List<InlineKeyboardButton> getUpperRowInlineButtons() {
         return List.of(
                 InlineKeyboardButton.builder()
-                        .text("Да")
+                        .text("Отправить")
                         .callbackData("CONFIRM_YES")
                         .build(),
                 InlineKeyboardButton.builder()
-                        .text("Нет")
+                        .text("Удалить")
                         .callbackData("CONFIRM_NO")
                         .build());
     }

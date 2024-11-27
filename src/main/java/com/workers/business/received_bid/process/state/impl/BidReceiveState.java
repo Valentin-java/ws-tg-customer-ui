@@ -69,6 +69,7 @@ public class BidReceiveState implements BidState {
             }
         }
         if (BidReceivePayloadEnum.REJECT_BID.name().equals(input)) {
+
             var request = new BidChangeStatusRequest(orderId, bidId);
             var response = rejectBidClient.doRequest(request);
 
@@ -79,7 +80,6 @@ public class BidReceiveState implements BidState {
                 eventPublisher.publishEvent(new MessageEditEvent(this, context.getChatId(), context.getMessageIdActualState(), WARNING_MESSAGE));
             }
             eventPublisher.publishEvent(new OrderProcessCompletedEvent(this, context.getChatId()));
-
         }
 
         if (BidReceivePayloadEnum.SEND_MESSAGE_BID.name().equals(input)) {

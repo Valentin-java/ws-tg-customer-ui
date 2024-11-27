@@ -44,7 +44,6 @@ public class CategorySelectionState implements OrderState {
     }
 
     @Override
-    @SneakyThrows
     public void updateState(OrderContext context) {
         if (context.isInputValid()) {
             context.setCurrentState(nextState);
